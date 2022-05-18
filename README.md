@@ -3,6 +3,8 @@
 # Resumo do projeto
 Projeto em andamento, apresenta uma Pokedex com o objetivo de estudo e aplicação de padrões de projetos, técnicas de teste e modelagem para fluter.
 
+### Gerenciamento de branches com git flow
+
 ## 🛠️ Abrir e rodar o projeto
 <h2>No terminal execute:</h2>
 <p>flutter pub get (obter ou atualizar os pacotes)</p>
