@@ -1,0 +1,4 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+com/example/poke_dex/BuildConfig.java
+ com.example.poke_dex.BuildConfig
