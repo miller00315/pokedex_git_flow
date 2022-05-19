@@ -2,7 +2,7 @@
 
 printf "\e[33;1m%s\e[0m\n" 'Pre-Commit'
 
-# Undo the stash of the files
+# Desfaz stash dos arquivos
 pop_stash_files () {
     if [ -n "$hasChanges" ]; then
         printf "\e[33;1m%s\e[0m\n" '=== Applying git stash changes ==='
@@ -10,7 +10,7 @@ pop_stash_files () {
     fi
 }
 
-# Stash unstaged files
+# Stash para arquivos que não estão em staged
 hasChanges=$(git diff)
 if [ -n "$hasChanges" ]; then
     printf "\e[33;1m%s\e[0m\n" 'Stashing unstaged changes'
@@ -40,7 +40,7 @@ fi
 printf "\e[33;1m%s\e[0m\n" 'Finished running Flutter analyzer'
 printf '%s\n' "${avar}"
 
-# Unit tests
+# Testes unitários
 printf "\e[33;1m%s\e[0m\n" '=== Running Unit Tests ==='
 flutter test
 if [ $? -ne 0 ]; then
