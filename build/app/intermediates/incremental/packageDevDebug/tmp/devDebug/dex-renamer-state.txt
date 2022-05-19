@@ -1,4 +1,0 @@
-#Wed May 18 14:28:47 BRT 2022
-base.0=/home/miller/Documents/poke_dex/build/app/intermediates/dex/devDebug/mergeDexDevDebug/classes.dex
-renamed.0=classes.dex
-path.0=classes.dex
