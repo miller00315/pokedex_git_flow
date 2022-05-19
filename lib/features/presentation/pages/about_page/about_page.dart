@@ -10,7 +10,6 @@ import 'package:poke_dex/features/presentation/pages/about_page/widgets/status_t
 import 'package:poke_dex/features/presentation/stores/pokemon/pokemon_store.dart';
 
 class AboutPage extends StatefulWidget {
-
   const AboutPage({
     Key? key,
   }) : super(key: key);
@@ -101,7 +100,7 @@ class _AboutPageState extends State<AboutPage>
           duration: const Duration(milliseconds: 300),
         ),
         controller: _pageController,
-        children:  [
+        children: [
           AboutTab(),
           EvolutionTab(),
           StatusTab(),

@@ -1,4 +1,3 @@
-
 import 'package:poke_dex/features/data/models/pokemon_detail_model.dart';
 import 'package:poke_dex/features/data/models/specie.dart';
 

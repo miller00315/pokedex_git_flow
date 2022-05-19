@@ -56,10 +56,10 @@ class _DoubleTapToCloseAppState extends State<DoubleTapToCloseApp> {
   }
 
   void _ensureThatContextContainsScaffold() {
-    if (Scaffold.of(context) == null) {
+    /* if (Scaffold.of(context) == null) {
       throw FlutterError(
         '`DoubleTapToCloseApp` must be wrapped in a `Scaffold`.',
       );
-    }
+    } */
   }
 }

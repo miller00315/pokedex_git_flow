@@ -18,6 +18,5 @@ class AppText {
   static const total = 'Total';
   static const translating = 'Traduzindo';
   static const weight = 'Peso';
-  static const doubleTapCloseAppMessage =
-      'Toque novamente para sair do app';
+  static const doubleTapCloseAppMessage = 'Toque novamente para sair do app';
 }

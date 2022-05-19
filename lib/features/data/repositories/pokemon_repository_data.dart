@@ -4,7 +4,6 @@ import 'package:poke_dex/features/data/models/pokemon_list_model.dart';
 import 'package:poke_dex/features/data/services/pokemon_service.dart';
 import 'package:poke_dex/features/domain/repositories/pokemon_repository.dart';
 
-
 /// Repositório referente a api pokemon
 class PokemonRepositoryData extends PokemonRepository {
   /// Serviço responsável por solicitar os dados a api

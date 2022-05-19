@@ -5,7 +5,6 @@ import 'package:poke_dex/features/data/models/specie.dart';
 import 'package:poke_dex/features/data/services/pokemon_v2_service.dart';
 import 'package:poke_dex/features/domain/repositories/pokemon_v2_repository.dart';
 
-
 /// Repositório referente a api pokemonV2
 class PokemonV2RepositoryData extends PokemonV2Repository {
   /// Serviço reposnsável por solicitar a api os dados da api
