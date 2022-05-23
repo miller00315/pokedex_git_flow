@@ -59,13 +59,9 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
-  void didUpdateWidget(HomePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   void animateButton() {

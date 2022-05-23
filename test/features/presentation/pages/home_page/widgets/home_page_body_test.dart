@@ -41,8 +41,10 @@ void main() {
 
   final handlePokemonItemClickMock = MockFunction();
 
+  final serviceLocator = GetIt.instance;
+
   setUp(() {
-    final serviceLocator = GetIt.instance;
+    serviceLocator.pushNewScope();
 
     serviceLocator.registerLazySingleton<IFetchFavoritesUsecase>(
       () => fetchFavoritesUsecase,
@@ -61,6 +63,10 @@ void main() {
           serviceLocator(),
           serviceLocator(),
         ));
+  });
+
+  tearDown(() {
+    serviceLocator.pushNewScope();
   });
 
   group('HomePageBody group', () {
