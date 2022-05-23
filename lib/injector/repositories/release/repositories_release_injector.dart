@@ -16,6 +16,6 @@ void repositoriesReleaseInjector(GetIt serviceLocator) {
   );
 
   serviceLocator.registerLazySingleton<SecureStorageRepository>(
-    () => SecureStorageRepositoryData(),
+    () => SecureStorageRepositoryData(serviceLocator()),
   );
 }

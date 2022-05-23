@@ -1,25 +1,33 @@
-import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:poke_dex/core/error/failures.dart';
+import 'package:dartz/dartz.dart';
+import 'package:poke_dex/core/usecase/usecase.dart';
+import 'package:poke_dex/features/data/data_sources/secure_storage_data_source.dart';
 import 'package:poke_dex/features/domain/repositories/secure_storage_repository.dart';
 
 class SecureStorageRepositoryData extends SecureStorageRepository {
-  final FlutterSecureStorage storage;
+  final ISecureStorageDataSource secureStorageDataSource;
 
-  SecureStorageRepositoryData() : storage = const FlutterSecureStorage();
+  SecureStorageRepositoryData(this.secureStorageDataSource);
 
   @override
-  Future setFavoritesItem(List<int> ids) async {
-    await storage.write(key: 'favorites', value: jsonEncode(ids));
+  Future<Either<Failure, List<int>>> getFavoritesItems() async {
+    try {
+      final res = await secureStorageDataSource.getFavoritesItems();
+
+      return Right(res);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
   }
 
   @override
-  Future<List<int>> getFavoritesItems() async {
-    final data = await storage.read(key: 'favorites');
+  Future<Either<Failure, NoParams>> setFavoritesItem(List<int> ids) async {
+    try {
+      await secureStorageDataSource.setFavoritesItem(ids);
 
-    if (data == null || data.isEmpty) {
-      return [];
+      return Right(NoParams());
+    } catch (e) {
+      return Left(CacheFailure());
     }
-
-    return List<int>.from(jsonDecode(data));
   }
 }

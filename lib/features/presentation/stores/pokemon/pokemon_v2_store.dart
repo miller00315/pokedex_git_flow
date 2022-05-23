@@ -2,18 +2,22 @@ import 'package:mobx/mobx.dart';
 import 'package:poke_dex/features/data/models/pokemon_detail_model.dart';
 import 'package:poke_dex/features/data/models/specie.dart';
 import 'package:poke_dex/features/domain/entities/status_entity.dart';
-import 'dart:developer' as developer;
 
-import 'package:poke_dex/features/domain/repositories/pokemon_v2_repository.dart';
+import 'package:poke_dex/features/domain/usecases/fetch_pokemon_details_usecase.dart';
+import 'package:poke_dex/features/domain/usecases/fetch_species_usecase.dart';
 
 part 'pokemon_v2_store.g.dart';
 
 class PokemonV2Store = _PokemonV2StoreBase with _$PokemonV2Store;
 
 abstract class _PokemonV2StoreBase with Store {
-  final PokemonV2Repository _pokemonV2Repository;
+  final IFetchPokemonDetailsUseCase fetchPokemonDetailsUseCase;
+  final IFetchSpeciesUseCase fetchSpeciesUseCase;
 
-  _PokemonV2StoreBase(this._pokemonV2Repository);
+  _PokemonV2StoreBase({
+    required this.fetchPokemonDetailsUseCase,
+    required this.fetchSpeciesUseCase,
+  });
 
   @observable
   SpecieModel? specie;
@@ -29,39 +33,29 @@ abstract class _PokemonV2StoreBase with Store {
 
   @action
   Future fetchPokemonDetails(String name) async {
-    try {
-      fetchPokemonDetailStatus = InProgressStatus();
+    fetchPokemonDetailStatus = InProgressStatus();
 
-      pokemonDetail =
-          await _pokemonV2Repository.fetchPokemonDetails(name.toLowerCase());
+    final res = await fetchPokemonDetailsUseCase(PokemonDetailsParams(name));
 
+    if (res.isRight()) {
+      pokemonDetail = res.getOrElse(() => const PokemonDetailModel());
       fetchPokemonDetailStatus = DoneStatus();
-    } catch (e, stackTrace) {
-      developer.log(
-        e.toString(),
-        name: 'pokemon_v2_store.dart',
-        error: stackTrace.toString(),
-      );
-
+    } else if (res.isLeft()) {
       fetchPokemonDetailStatus = ErrorStatus();
     }
   }
 
   @action
   Future fetchSpecie(int number) async {
-    try {
-      fetchSpecieStatus = InProgressStatus();
+    fetchSpecieStatus = InProgressStatus();
 
-      specie = await _pokemonV2Repository.fetchSpecie(number.toString());
+    final res =
+        await fetchSpeciesUseCase(FetchSpeciesParams(number.toString()));
 
+    if (res.isRight()) {
+      specie = res.getOrElse(() => SpecieModel());
       fetchSpecieStatus = DoneStatus();
-    } catch (e, stackTrace) {
-      developer.log(
-        e.toString(),
-        name: 'pokemon_v2_store.dart',
-        error: stackTrace.toString(),
-      );
-
+    } else if (res.isLeft()) {
       fetchSpecieStatus = ErrorStatus();
     }
   }

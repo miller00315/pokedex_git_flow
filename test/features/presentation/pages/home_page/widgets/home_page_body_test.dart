@@ -1,17 +1,26 @@
+/* class MockFunction extends Mock {
+  call({
+    required PokemonModel pokemon,
+    required int index,
+  });
+}
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:network_image_mock/network_image_mock.dart';
-import 'package:poke_dex/features/domain/repositories/pokemon_repository.dart';
-import 'package:poke_dex/features/domain/repositories/secure_storage_repository.dart';
-import 'package:poke_dex/mock/fake_data/pokemon_fake_data.dart';
 import 'package:poke_dex/features/data/models/pokemon_model.dart';
+import 'package:poke_dex/features/domain/usecases/fetch_favorites_usecase.dart';
+import 'package:poke_dex/features/domain/usecases/fetch_pokemon_usecase.dart';
+import 'package:poke_dex/features/domain/usecases/set_favorites_usecase.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 import 'package:poke_dex/features/presentation/pages/home_page/widgets/home_page_body.dart';
 import 'package:poke_dex/features/presentation/pages/home_page/widgets/poke_item/poke_item.dart';
 import 'package:poke_dex/features/presentation/stores/pokemon/pokemon_store.dart';
+import 'package:poke_dex/mock/fake_data/pokemon_fake_data.dart';
 
-import '../../../stores/pokemon/pokemon_store_test.mocks.dart';
+import 'home_page_body_test.mocks.dart';
 
 class MockFunction extends Mock {
   call({
@@ -20,20 +29,35 @@ class MockFunction extends Mock {
   });
 }
 
+@GenerateMocks([
+  FetchPokemonUseCase,
+  FetchFavoritesUsecase,
+  SetFavoritesUsecase,
+])
 void main() {
+  final fetchPokemonUsecase = MockFetchPokemonUseCase();
+  final fetchFavoritesUsecase = MockFetchFavoritesUsecase();
+  final setFavoritesUsecase = MockSetFavoritesUsecase();
+
   final handlePokemonItemClickMock = MockFunction();
 
   setUp(() {
     final serviceLocator = GetIt.instance;
 
-    serviceLocator.registerLazySingleton<PokemonRepository>(
-        () => MockPokemonRepositoryMock());
+    serviceLocator.registerLazySingleton<IFetchFavoritesUsecase>(
+      () => fetchFavoritesUsecase,
+    );
 
-    serviceLocator.registerLazySingleton<SecureStorageRepository>(
-      () => MockSecureStorageRepositoryMock(),
+    serviceLocator.registerLazySingleton<ISetFavoritesUsecase>(
+      () => setFavoritesUsecase,
+    );
+
+    serviceLocator.registerLazySingleton<IFetchPokemonUseCase>(
+      () => fetchPokemonUsecase,
     );
 
     serviceLocator.registerLazySingleton<PokemonStore>(() => PokemonStore(
+          serviceLocator(),
           serviceLocator(),
           serviceLocator(),
         ));

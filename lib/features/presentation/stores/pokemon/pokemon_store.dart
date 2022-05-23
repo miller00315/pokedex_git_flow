@@ -2,27 +2,30 @@ import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'package:poke_dex/config/consts/palette.dart';
 import 'package:poke_dex/config/consts/urls.dart';
+import 'package:poke_dex/core/usecase/usecase.dart';
 import 'package:poke_dex/core/utils/string_replace.dart';
 import 'package:poke_dex/features/data/models/pokemon_list_model.dart';
 import 'package:poke_dex/features/data/models/pokemon_model.dart';
 import 'package:poke_dex/features/domain/entities/status_entity.dart';
-import 'dart:developer' as developer;
-
-import 'package:poke_dex/features/domain/repositories/pokemon_repository.dart';
-import 'package:poke_dex/features/domain/repositories/secure_storage_repository.dart';
+import 'package:poke_dex/features/domain/usecases/fetch_favorites_usecase.dart';
+import 'package:poke_dex/features/domain/usecases/fetch_pokemon_usecase.dart';
+import 'package:poke_dex/features/domain/usecases/set_favorites_usecase.dart';
 
 part 'pokemon_store.g.dart';
 
 class PokemonStore = _PokemonStoreBase with _$PokemonStore;
 
 abstract class _PokemonStoreBase with Store {
-  final PokemonRepository _pokemonRepository;
+  final IFetchPokemonUseCase fetchPokemonUseCase;
 
-  final SecureStorageRepository _secureStorageRepository;
+  final IFetchFavoritesUsecase fetchFavoritesUsecase;
+
+  final ISetFavoritesUsecase setFavoritesUsecase;
 
   _PokemonStoreBase(
-    this._pokemonRepository,
-    this._secureStorageRepository,
+    this.fetchPokemonUseCase,
+    this.fetchFavoritesUsecase,
+    this.setFavoritesUsecase,
   );
 
   @observable
@@ -53,13 +56,15 @@ abstract class _PokemonStoreBase with Store {
   Future fetchPokemonList() async {
     _pokeList = null;
 
-    try {
-      fetchStatus = InProgressStatus();
+    fetchStatus = InProgressStatus();
 
-      _pokeList = await _pokemonRepository.fetchPokemonList();
+    final res = await fetchPokemonUseCase(NoParams());
+
+    if (res.isRight()) {
+      _pokeList = res.getOrElse(() => const PokeListModel(pokemonList: []));
 
       fetchStatus = DoneStatus();
-    } catch (e) {
+    } else if (res.isLeft()) {
       fetchStatus = ErrorStatus();
     }
   }
@@ -89,34 +94,21 @@ abstract class _PokemonStoreBase with Store {
 
   @action
   Future favoriteUnfavorite(int id) async {
-    try {
-      if (favorites.contains(id)) {
-        favorites.remove(id);
-      } else {
-        favorites.add(id);
-      }
-
-      await _secureStorageRepository.setFavoritesItem(favorites);
-    } catch (e, stackTrace) {
-      developer.log(
-        e.toString(),
-        name: 'pokemon_store.dart',
-        error: stackTrace.toString(),
-      );
+    if (favorites.contains(id)) {
+      favorites.remove(id);
+    } else {
+      favorites.add(id);
     }
+
+    await setFavoritesUsecase(SetFavoritesParams(favorites));
   }
 
   @action
   Future getFavorites() async {
-    try {
-      favorites =
-          (await _secureStorageRepository.getFavoritesItems()).asObservable();
-    } catch (e, stackTrace) {
-      developer.log(
-        e.toString(),
-        name: 'pokemon_store.dart',
-        error: stackTrace.toString(),
-      );
-    }
+    final res = await fetchFavoritesUsecase(NoParams());
+
+    if (res.isRight()) {
+      favorites = (res.getOrElse(() => [])).asObservable();
+    } else if (res.isLeft()) {}
   }
 }

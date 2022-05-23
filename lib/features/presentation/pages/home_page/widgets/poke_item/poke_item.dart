@@ -18,9 +18,6 @@ class PokeItem extends StatelessWidget {
   /// O pokemon a ser apresentado
   final PokemonModel pokemon;
 
-  /// store utilizada em testes
-  final PokemonStore? pokemonStore;
-
   /// posição na lista referente ao pokemon atual
   final int index;
 
@@ -31,7 +28,6 @@ class PokeItem extends StatelessWidget {
     Key? key,
     required this.pokemon,
     required this.index,
-    this.pokemonStore,
     this.shouldTranslate = true,
   }) : super(key: key);
 

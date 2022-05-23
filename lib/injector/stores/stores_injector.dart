@@ -7,12 +7,14 @@ void storesInjector(GetIt serviceLocator) {
     () => PokemonStore(
       serviceLocator(),
       serviceLocator(),
+      serviceLocator(),
     ),
   );
 
   serviceLocator.registerFactory<PokemonV2Store>(
     () => PokemonV2Store(
-      serviceLocator(),
+      fetchPokemonDetailsUseCase: serviceLocator(),
+      fetchSpeciesUseCase: serviceLocator(),
     ),
   );
 }
